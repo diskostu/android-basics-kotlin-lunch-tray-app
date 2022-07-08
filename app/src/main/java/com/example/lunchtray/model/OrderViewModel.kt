@@ -15,7 +15,10 @@
  */
 package com.example.lunchtray.model
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.example.lunchtray.data.DataSource
 import java.text.NumberFormat
 
@@ -118,25 +121,32 @@ class OrderViewModel : ViewModel() {
      * Update subtotal value.
      */
     private fun updateSubtotal(itemPrice: Double) {
-        // TODO: if _subtotal.value is not null, update it to reflect the price of the recently
-        //  added item.
-        //  Otherwise, set _subtotal.value to equal the price of the item.
+        if (_subtotal.value != null) {
+            _subtotal.value = _subtotal.value!! + itemPrice
+        } else {
+            _subtotal.value = itemPrice
+        }
 
-        // TODO: calculate the tax and resulting total
+        calculateTaxAndTotal()
     }
 
     /**
      * Calculate tax and update total.
      */
     fun calculateTaxAndTotal() {
-        // TODO: set _tax.value based on the subtotal and the tax rate.
-        // TODO: set the total based on the subtotal and _tax.value.
+        _tax.value = _subtotal.value!!.times(taxRate)
+        _total.value = _subtotal.value!!.plus(_tax.value!!)
     }
 
     /**
      * Reset all values pertaining to the order.
      */
     fun resetOrder() {
-        // TODO: Reset all values associated with an order
+        _entree.value = null
+        _side.value = null
+        _accompaniment.value = null
+        _subtotal.value = 0.0
+        _tax.value = 0.0
+        _total.value = 0.0
     }
 }
